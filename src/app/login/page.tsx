@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
-import { Mail, Lock, User, X, Loader2 } from "lucide-react";
+import { Mail, Lock, User, X, Loader2, Palmtree, Trees, History, Church } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function AuthModal({ onClose }: { onClose: () => void }) {
@@ -11,26 +11,47 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
   const [loading, setLoading] = useState(false);
   const [isRegister, setIsRegister] = useState(true);
 
+  // Interest State
+  const [interests, setInterests] = useState({
+    beach: 0, nature: 0, history: 0, religious: 0
+  });
+
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
+  const toggleInterest = (key: keyof typeof interests) => {
+    setInterests(prev => ({ ...prev, [key]: prev[key] === 1 ? 0 : 1 }));
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = isRegister
+
+    const { error, data } = isRegister
       ? await supabase.auth.signUp({
           email,
           password,
           options: { 
-            data: { full_name: fullName },
+            data: { 
+              full_name: fullName,
+              interest_beach: interests.beach,
+              interest_nature: interests.nature,
+              interest_history: interests.history,
+              interest_religious: interests.religious
+            },
             emailRedirectTo: `${window.location.origin}/auth/callback`
           },
         })
       : await supabase.auth.signInWithPassword({ email, password });
 
-    if (error) alert(error.message);
+    if (error) {
+      alert(error.message);
+    } else {
+      if (isRegister) alert("successfully register");
+      else onClose(); // Close modal on successful sign in
+    }
     setLoading(false);
   };
 
@@ -38,13 +59,10 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        // This must match your callback route
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
-    if (error) {
-      alert(error.message);
-    }
+    if (error) alert(error.message);
   };
 
   return (
@@ -59,16 +77,14 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
         className="relative w-full max-w-[900px] h-auto min-h-[550px] bg-white rounded-[40px] overflow-hidden flex shadow-[0_20px_50px_rgba(0,0,0,0.2)] border-none"
         onClick={(e) => e.stopPropagation()} 
       >
-        {/* CLOSE BUTTON - Fixed to close the modal */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-6 right-6 z-50 p-2 text-black lg:text-black hover:scale-110 transition-transform cursor-pointer"
+          className="absolute top-6 right-6 z-50 p-2 text-black hover:scale-110 transition-transform cursor-pointer"
         >
           <X size={28} />
         </button>
 
-        {/* Left: Image Panel */}
         <div className="hidden lg:block w-1/2 relative">
           <img
             src="https://i.pinimg.com/736x/d2/f5/ab/d2f5ab5ee124bef9e541df35f1b9a2e4.jpg"
@@ -77,29 +93,40 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
           />
         </div>
 
-        {/* Right: Form Panel */}
         <div className="w-full lg:w-1/2 p-10 lg:p-16 flex flex-col justify-center bg-white relative">
-          {/* Torn Edge Effect */}
           <div className="absolute top-0 -left-1 h-full w-10 bg-white hidden lg:block" style={{ clipPath: `polygon(100% 0%, 0% 0%, 25% 5%, 0% 10%, 20% 15%, 0% 20%, 15% 25%, 0% 30%, 30% 35%, 0% 40%, 20% 45%, 0% 50%, 25% 55%, 0% 60%, 15% 65%, 0% 70%, 30% 75%, 0% 80%, 20% 85%, 0% 90%, 25% 95%, 0% 100%, 100% 100%)` }} />
 
-          <h2 className="text-4xl font-black text-[#1a2b4b] mb-10 uppercase tracking-tight">
+          <h2 className="text-4xl font-black text-[#1a2b4b] mb-6 uppercase tracking-tight">
             {isRegister ? "Sign Up" : "Sign In"}
           </h2>
 
-          <form onSubmit={handleAuth} className="space-y-4">
+          <form onSubmit={handleAuth} className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
             {isRegister && (
-              <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4ecdc4]" size={20} />
-                <input
-                  type="text"
-                  placeholder="name"
-                  required
-                  className="w-full pl-12 pr-4 py-3.5 bg-[#cbf3f0] border-none rounded-xl text-slate-700 outline-none focus:ring-2 focus:ring-[#4ecdc4]"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                />
-              </div>
+              <>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4ecdc4]" size={20} />
+                  <input
+                    type="text"
+                    placeholder="name"
+                    required
+                    className="w-full pl-12 pr-4 py-3.5 bg-[#cbf3f0] border-none rounded-xl text-slate-700 outline-none focus:ring-2 focus:ring-[#4ecdc4]"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                </div>
+
+                <div className="py-2">
+                  <p className="text-[10px] font-black uppercase text-slate-400 mb-2 ml-1 tracking-widest">Select Interests</p>
+                  <div className="grid grid-cols-4 gap-2">
+                    <InterestBtn active={interests.beach === 1} icon={<Palmtree size={18}/>} onClick={() => toggleInterest('beach')} />
+                    <InterestBtn active={interests.nature === 1} icon={<Trees size={18}/>} onClick={() => toggleInterest('nature')} />
+                    <InterestBtn active={interests.history === 1} icon={<History size={18}/>} onClick={() => toggleInterest('history')} />
+                    <InterestBtn active={interests.religious === 1} icon={<Church size={18}/>} onClick={() => toggleInterest('religious')} />
+                  </div>
+                </div>
+              </>
             )}
+
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4ecdc4]" size={20} />
               <input
@@ -111,6 +138,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#4ecdc4]" size={20} />
               <input
@@ -132,8 +160,7 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
             </button>
           </form>
 
-          {/* Google Login Button */}
-          <div className="mt-8 flex justify-center">
+          <div className="mt-6 flex justify-center">
             <button
               type="button"
               onClick={handleGoogleLogin}
@@ -147,12 +174,28 @@ export default function AuthModal({ onClose }: { onClose: () => void }) {
           <button
             type="button"
             onClick={() => setIsRegister(!isRegister)}
-            className="mt-8 text-left text-[10px] font-bold text-slate-400 hover:text-[#4ecdc4] transition-colors uppercase tracking-widest cursor-pointer"
+            className="mt-6 text-left text-[10px] font-bold text-slate-400 hover:text-[#4ecdc4] transition-colors uppercase tracking-widest cursor-pointer"
           >
             {isRegister ? "Already have an account? Sign In" : "Need an account? Create one"}
           </button>
         </div>
       </motion.div>
     </div>
+  );
+}
+
+function InterestBtn({ active, icon, onClick }: { active: boolean, icon: any, onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`p-3 flex items-center justify-center rounded-xl transition-all border-2 ${
+        active 
+          ? 'bg-[#4ecdc4] border-[#4ecdc4] text-white shadow-md scale-105' 
+          : 'bg-[#cbf3f0] border-transparent text-slate-400 hover:border-[#4ecdc4]'
+      }`}
+    >
+      {icon}
+    </button>
   );
 }
