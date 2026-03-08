@@ -1,21 +1,25 @@
 "use client";
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Globe2, Landmark, Plane, Send } from "lucide-react";
-import { useRouter } from "next/navigation";  
+import { Globe2, Plane, Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-const suggestions = [
-  { title: "Create a New Trip", icon: <Globe2 className="text-blue-400 h-5 w-5"/>, path: "/create-trip" },
-  { title: "Explore Places", icon: <Landmark className="text-orange-500 h-5 w-5"/>, path: "/explore-sri-lanka" },
-  { title: "My Adventures", icon: <Plane className="text-green-500 h-5 w-5"/>, path: "/my-trips" },
-  { title: "Discover Hidden gems", icon: <Landmark className="text-orange-500 h-5 w-5"/>, path: "" },
-  
-]
+export const suggestions = [
+  { title: "Create a New Trip", icon: <Globe2 className="text-blue-500 h-5 w-5" /> }
+];
 
-export default function Hero() {
+function Hero() {
   const router = useRouter();
-  
+  const [query, setQuery] = useState("");
+
+  const handleStartPlanning = () => {
+    // We pass the travel idea to the next page as a query parameter
+    const params = new URLSearchParams();
+    if (query) params.set("idea", query);
+    router.push(`/planner?${params.toString()}`);
+  };
+
   return (
     <section id="home" className="relative w-full h-screen bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: `url('/images/hero.jpg')` }}>
       <div className="absolute inset-0 bg-black/15" />
@@ -24,34 +28,43 @@ export default function Hero() {
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
             Plan Less. Travel More.
             <br />
-            <span className="text-white">Your Next Adventure Begins with <span className="text-muted">Explorea.</span></span>
+            <span className="text-white">Your Next Adventure Begins with <span className="font-black italic">TripMate.</span></span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-white">Tell me your travel idea - Explorea will plan your perfect trip in seconds.</p>
+          <p className="text-lg sm:text-xl text-white">Tell me your travel idea - We'll plan your perfect trip in seconds.</p>
 
           <div className="border rounded-2xl p-3 md:p-4 relative bg-white/10 backdrop-blur-md w-full">
             <Textarea
-              placeholder="Tell me your travel idea… I'll plan the perfect trip."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="e.g. A 3-day beach trip from Moratuwa to Colombo for a nature lover..."
               className="w-full h-24 md:h-28 bg-transparent border-none focus-visible:ring-0 shadow-none resize-none text-base md:text-xl text-white placeholder:text-gray-300"
             />
-            <Button size="icon" className="absolute bottom-3 md:bottom-6 right-3 md:right-6 bg-muted hover:opacity-90">
+            <Button 
+              onClick={handleStartPlanning}
+              size="icon" 
+              className="absolute bottom-3 md:bottom-6 right-3 md:right-6 bg-blue-600 hover:bg-blue-700"
+            >
               <Send className="h-5 w-5" />
             </Button>
           </div>
 
-          <div className="flex flex-wrap gap-3 items-center justify-center mt-4">
+          <div className="flex flex-wrap gap-4 mt-6 justify-center">
             {suggestions.map((suggestion, index) => (
-              <div
+              <button
                 key={index}
-                className="flex items-center gap-2 border border-black rounded-full p-2 px-4 md:p-3 cursor-pointer bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all"
+                onClick={handleStartPlanning}
+                className="flex items-center gap-2 px-4 py-2 bg-white/90 border border-gray-200 rounded-full shadow-sm hover:bg-blue-50 hover:scale-105 transition transform duration-200 cursor-pointer"
               >
                 {suggestion.icon}
-                <h2 className="text-[10px] md:text-xs text-black font-medium">{suggestion.title}</h2>
-              </div>
+                <span className="text-sm font-medium text-gray-800">{suggestion.title}</span>
+              </button>
             ))}
           </div>
         </div>
       </div>
-    </section>  
+    </section>
   );
 }
+
+export default Hero;
