@@ -6,6 +6,8 @@ import { Search, Compass, MapPin, ArrowRight, Users, Award, Filter, Star } from 
 import Footer from "@/sections/Footer";
 import Image from "next/image";
 import { useState } from "react";
+import Link from "next/link";
+
 
 export default function ExplorePage() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -337,13 +339,16 @@ export default function ExplorePage() {
                   
                   <div className="flex items-center justify-between">
                     <span className="text-xl font-bold text-black">{dest.price}</span>
-                    <motion.button 
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-6 py-3 bg-linear-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:shadow-xl transition-all"
-                    >
-                      Discover
-                    </motion.button>
+                    <Link href={`/explore-sri-lanka/${dest.id}`}>
+                      <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="px-6 py-3 bg-linear-to-r from-emerald-500 to-teal-600 text-white font-semibold rounded-2xl hover:shadow-xl transition-all"
+                      >
+                        Discover
+                      </motion.button>
+                      
+                    </Link>
                   </div>
                 </div>
               </motion.div>

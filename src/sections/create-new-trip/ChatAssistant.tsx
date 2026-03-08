@@ -9,11 +9,8 @@ export default function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname(); 
-
-  const hideOnPaths = ["/planner"]; 
-
-  // If the current path is in our "hide" list, return nothing
-  if (hideOnPaths.includes(pathname)) {
+  
+  if (pathname !== "/") {
     return null;
   }
 
@@ -26,7 +23,7 @@ export default function ChatAssistant() {
       {isOpen ? (
         <div className="bg-black w-96 h-[550px] rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
           {/* Header */}
-          <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center bg-gradient-to-r from-blue-600 to-blue-400">
+          <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center bg-linear-to-r from-blue-600 to-blue-400">
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 bg-white rounded-full animate-pulse" />
               <span className="font-semibold text-white text-sm">TripMate AI</span>
@@ -48,7 +45,7 @@ export default function ChatAssistant() {
         /* Compact FAB */
         <button 
           onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 p-4 rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200 text-white flex items-center justify-center group relative"
+          className="bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 p-4 rounded-2xl shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200 text-white flex items-center justify-center group relative"
           aria-label="Open Chat"
         >
           <MessageCircle className="w-6 h-6 group-hover:rotate-12 transition-transform" />
