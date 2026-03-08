@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import menuIcon from "@/assets/menu.svg";
-import { User, LogOut, Settings, ChevronDown } from "lucide-react";
+import { User, LogOut, Settings, ChevronDown, LayoutDashboard } from "lucide-react";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
-import AuthModal from "@/app/login/page"; // Ensure this points to your AuthModal file
+import AuthModal from "@/app/login/page"; 
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -60,15 +60,21 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
+          {/* Dashboard link visible only when logged in */}
+          {user && (
+            <Link href="/dashboard" className="transition-colors uppercase text-xs tracking-widest text-blue-400 hover:text-blue-300">
+              Dashboard
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-4 lg:gap-6">
           {!user ? (
             <button
               onClick={() => setIsAuthModalOpen(true)}
-              className="hidden lg:block bg-blue-600 hover:bg-blue-700 px-6 py-2.5 rounded-xl text-white font-semibold text-sm uppercase tracking-wider transition-all cursor-pointer"
+              className="hidden lg:block bg-green-500 px-6 py-2.5 rounded-xl text-white font-semibold text-sm uppercase tracking-wider transition-all cursor-pointer"
             >
-              Sign In
+              Get Started
             </button>
           ) : (
             <div className="hidden lg:block relative">
@@ -100,8 +106,18 @@ export default function Navbar() {
                       <p className="text-xs text-neutral-400 truncate">{user.email}</p>
                     </div>
                     <div className="py-1">
-                      <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-sm text-neutral-200 hover:bg-white/10 transition-all">
-                        <Settings className="w-4 h-4" /> My Dashboard
+                      {/* Your Requested Link Added Here */}
+                      <Link 
+                        href="/dashboard" 
+                        className="flex items-center gap-3 px-4 py-3 text-sm text-neutral-200 hover:bg-white/10 transition-all"
+                        onClick={() => setProfileOpen(false)}
+                      >
+                        <LayoutDashboard className="w-4 h-4" /> 
+                        My Dashboard
+                      </Link>
+                      
+                      <Link href="/profile" className="flex items-center gap-3 px-4 py-3 text-sm text-neutral-200 hover:bg-white/10 transition-all">
+                        <Settings className="w-4 h-4" /> Account Settings
                       </Link>
                     </div>
                     <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 text-sm text-neutral-200 hover:bg-red-500/20 hover:text-red-300 transition-all w-full text-left cursor-pointer">
