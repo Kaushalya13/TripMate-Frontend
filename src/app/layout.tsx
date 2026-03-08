@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ChatAssistant from "@/components/ChatAssistant";
+import ChatAssistant from "@/sections/create-new-trip/ChatAssistant";
 
 // Google Fonts
 const geistSans = Geist({

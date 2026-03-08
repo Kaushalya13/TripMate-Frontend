@@ -22,13 +22,13 @@ function Hero() {
 
   return (
     <section id="home" className="relative w-full h-screen bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: `url('/images/hero.jpg')` }}>
-      <div className="absolute inset-0 bg-black/15" />
+      <div className="absolute inset-0 bg-black/40" />
       <div className="relative z-10 mt-6 w-full flex justify-center px-6">
         <div className="max-w-3xl w-full text-center space-y-6">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
             Plan Less. Travel More.
             <br />
-            <span className="text-white">Your Next Adventure Begins with <span className="font-black italic">TripMate.</span></span>
+            <span className="text-white">Your Next Adventure Begins with <span className="font-black text-green-500">TripMate.</span></span>
           </h1>
 
           <p className="text-lg sm:text-xl text-white">Tell me your travel idea - We'll plan your perfect trip in seconds.</p>
