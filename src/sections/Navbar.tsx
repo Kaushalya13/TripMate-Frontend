@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
-import AuthModal from "@/app/login/page"; 
+import AuthModal from "@/app/(auth)/login/page";
 
 const navLinks = [
   { label: "Home", href: "/" },
