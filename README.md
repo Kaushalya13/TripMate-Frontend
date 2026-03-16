@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌍 TripMate AI - Client Application
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18-blue?style=flat&logo=react)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=flat&logo=tailwind-css)](https://tailwindcss.com/)
+[![Supabase](https://img.shields.io/badge/Supabase-Auth-3ECF8E?style=flat&logo=supabase)](https://supabase.com/)
+---
 
-First, run the development server:
+## 📖 Overview
+The TripMate AI client is a highly interactive, state-driven web application built with **Next.js (App Router)**. It provides a seamless, native-app-like user experience for generating personalized travel itineraries across Sri Lanka. The frontend manages complex state transitions, dynamic map rendering, and secure authentication while communicating with a FastAPI Python backend for neural network inference.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Key Frontend Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. State-Driven Travel Wizard
+* A multi-step planning interface utilizing React `useState` and Framer Motion for smooth transitions (`landing` -> `locations` -> `preferences` -> `planning` -> `selection`).
+* Optimistic UI updates and intelligent form pre-filling based on natural language inputs from the Hero section.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Interactive Mapbox Integration
+* Real-time geographic visualization using **Mapbox GL JS**.
+* Dynamic markers and automated camera `flyTo` animations that update instantly when the AI Engine returns a ranked itinerary.
+* Managed via strictly controlled React `useEffect` and `useRef` hooks to prevent hydration mismatches and infinite re-rendering loops.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Enterprise Admin Dashboard
+* **Layout Pattern Architecture:** Utilizes Next.js Route Groups `(admin)` with persistent sidebars to avoid unnecessary DOM re-renders.
+* **Service Layer Integration:** Data fetching is abstracted into a `locationService.ts` file, adhering to the Separation of Concerns (SoC) principle.
+* **Pagination & Lazy Loading:** Offset-based pagination for managing 1,851+ Points of Interest (POIs) without degrading browser performance.
 
-## Learn More
+### 4. Secure Authentication
+* Integrated with `@supabase/ssr` for secure Server-Side Rendering authentication.
+* Custom modal capturing detailed AI preferences (Beach, Nature, History, Religious) during both manual Email/Password signups and Google OAuth flows.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠️ Frontend Technology Stack
+* **Core Framework:** Next.js 14 (React 18)
+* **Styling & Animation:** Tailwind CSS, Framer Motion
+* **Mapping:** Mapbox GL JS (`mapbox-gl`)
+* **Icons:** Lucide React
+* **BaaS SDK:** Supabase JavaScript Client
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📂 Project Structure (Clean Architecture)
+```text
+src/
+├── app/                    # Next.js App Router
+│   ├── (admin)/            # Route Group: Secure Admin Dashboard
+│   ├── (auth)/             # Route Group: Authentication callbacks
+│   ├── trip/               # User-facing AI Planner view
+│   ├── layout.tsx          # Root layout & providers
+│   └── page.tsx            # Landing page (Hero)
+├── components/             # Reusable UI Components
+│   ├── admin/              # Dashboard specific components (Sidebar, StatCards)
+│   ├── ui/                 # Shared primitives (Buttons, Inputs, Modals)
+│   └── SearchableSelect.tsx# Custom dropdown with search filter
+├── lib/                    # Shared logic & configurations
+│   ├── services/           # API and Database Service Layer (SoC)
+│   ├── api.ts              # Fetch wrappers for Python Backend
+│   └── types.ts            # Global TypeScript Interfaces
+└── public/                 # Static assets (Images, Fonts)
